@@ -1,16 +1,55 @@
 #!/usr/bin/python3
 """
-Island Perimeter
+    Island Perimeter.
 """
+
+
+def incr_perimeter(grid, row, col):
+    """
+        Check horizontally/vertically for water
+        and increses perimeter.
+    """
+    perimeter = 0
+
+    try:
+        if grid[row][col + 1] == 0:
+            perimeter += 1
+    except KeyError:
+        pass
+
+    try:
+        if grid[row][col - 1] == 0:
+            perimeter += 1
+    except KeyError:
+        pass
+
+    try:
+        if grid[row + 1][col] == 0:
+            perimeter += 1
+    except KeyError:
+        pass
+
+    try:
+        if grid[row - 1][col] == 0:
+            perimeter += 1
+    except KeyError:
+        pass
+
+    return perimeter
 
 def island_perimeter(grid):
     """
-     returns the perimeter of the island described in grid
-    :param grid:
-    :return:
+        Returns the perimeter of the
+        island described in 'grid'.
     """
-    area = 0
-    for row in grid + list(map(list, zip(*grid))):
-        for i1, i2 in zip([0] + row, row + [0]):
-            area += int(i1 != i2)
-    return area
+    perimeter = 0
+
+    for row in range(len(grid)):
+        if 1 not in grid[row]:
+            continue
+
+        for col in range(len(grid[row])):
+            if grid[row][col] == 1:
+                perimeter += incr_perimeter(grid, row, col)
+
+    return perimeter
