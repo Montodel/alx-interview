@@ -1,55 +1,41 @@
 #!/usr/bin/python3
-"""
-    Island Perimeter.
-"""
+""" Perimeter of the island """
 
-
-def incr_perimeter(grid, row, col):
-    """
-        Check horizontally/vertically for water
-        and increses perimeter.
-    """
-    perimeter = 0
-
-    try:
-        if grid[row][col + 1] == 0:
-            perimeter += 1
-    except KeyError:
-        pass
-
-    try:
-        if grid[row][col - 1] == 0:
-            perimeter += 1
-    except KeyError:
-        pass
-
-    try:
-        if grid[row + 1][col] == 0:
-            perimeter += 1
-    except KeyError:
-        pass
-
-    try:
-        if grid[row - 1][col] == 0:
-            perimeter += 1
-    except KeyError:
-        pass
-
-    return perimeter
 
 def island_perimeter(grid):
     """
-        Returns the perimeter of the
-        island described in 'grid'.
+    A function that returns the perimeter of the island
+
+    Argument:
+    grid: list of list of integers
+
+    Returns: integer
     """
+    n_rows = len(grid)
+    n_cols = len(grid[0])
+    # add rows of only zeros at top and bottom of grid
+    grid = [[0]*n_cols] + grid + [[0]*n_cols]
+    # add cols of only zeros at left and right of grid
+    for i in range(n_rows + 2):
+            grid[i] = [0] + grid[i] + [0]
     perimeter = 0
-
-    for row in range(len(grid)):
-        if 1 not in grid[row]:
-            continue
-
-        for col in range(len(grid[row])):
+    islands = 0
+    for row in range(n_rows + 1):
+        for col in range(n_cols + 1):
             if grid[row][col] == 1:
-                perimeter += incr_perimeter(grid, row, col)
-
+                up = grid[row - 1][col]
+                down = grid[row + 1][col]
+                left = grid[row][col - 1]
+                right = grid[row][col + 1]
+                total = up + down + left + right
+                if total == 0:
+                    islands += 1
+                    perimeter += 4 - total
+                else:
+                    perimeter += 4 - total
+    if islands > 1:
+        return
     return perimeter
+
+if __name__ == '__main__':
+    island_perimeter(grid)
