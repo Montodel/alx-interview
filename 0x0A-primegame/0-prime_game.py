@@ -1,66 +1,49 @@
 #!/usr/bin/python3
-"""
-This module contains the function `isWinner`
-which determines the winner of the game.
-"""
+
+""" Prime Game """
 
 
-def is_prime(num):
-    """
-    Checks if a number is prime.
-    Returns True if the number is prime, False otherwise.
-    """
-    if num < 2:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
+def check_prime(n):
+    """ Check if n is a prime number """
+    for i in range(2, int(n ** 0.5) + 1):
+        if not n % i:
             return False
     return True
 
 
-def isWinner(x, nums):
-    """
-    Determines the winner of the game based on
-    the number of rounds and the values of `nums`.
-
-    Args:
-        x (int): The number of rounds.
-        nums (list): A list of integers representing the
-        values of `n` for each round.
-
-    Returns:
-        str or None: The name of the player with the
-        most wins (either "Maria" or "Ben"),
-        or None if the winner cannot be determined.
-    """
-    maria_wins = 0
-    ben_wins = 0
-
-    for i in range(x):
-        primes = []
-        for j in range(2, nums[i] + 1):
-            if is_prime(j):
-                primes.append(j)
-
-        m_turn = len(primes) % 2 == 0
-        b_turn = not m_turn
-
-        while primes:
-            if m_turn:
-                primes.pop()
+def add_prime(n, primes):
+    """ Add prime to list """
+    last_prime = primes[-1]
+    if n > last_prime:
+        for i in range(last_prime + 1, n + 1):
+            if check_prime(i):
+                primes.append(i)
             else:
-                primes.pop(0)
-            m_turn = not m_turn
-            b_turn = not b_turn
+                primes.append(0)
 
-        if m_turn:
-            ben_wins += 1
+
+def isWinner(x, nums):
+    """ x is the number of rounds and nums is an array of n
+    Return: name of the player that won the most rounds
+    If the winner cannot be determined, return None """
+
+    score = {"Maria": 0, "Ben": 0}
+    primes = [0, 0, 2]
+    add_prime(max(nums), primes)
+
+    for round in range(x):
+        _sum = sum((i != 0 and i <= nums[round])
+                   for i in primes[:nums[round] + 1])
+        if (_sum % 2):
+            winner = "Maria"
         else:
-            maria_wins += 1
+            winner = "Ben"
+        if winner:
+            score[winner] += 1
 
-    if maria_wins > ben_wins:
+    if score["Maria"] > score["Ben"]:
         return "Maria"
-    elif ben_wins > maria_wins:
+    elif score["Ben"] > score["Maria"]:
         return "Ben"
-    else:
-        return None
+
+    return None
